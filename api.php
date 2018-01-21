@@ -2,6 +2,10 @@
 ini_set('display_errors',1);   //*** error will be displayed in /var/log/httpd/error_log
 require('class/database.php');
 
+$db_hostname = "localhost";
+$database_name = "seal";
+$table_name = "PLAYLIST";
+
 //***
 //*** getting path for routing resource target
 //*** $_SERVER['SCRIPT_NAME'], /api
@@ -38,7 +42,7 @@ if(!empty($paths[1]) && array_key_exists("key", $db_info) && array_key_exists("v
 //*** handle routing by http method
 //***
 switch (strtolower($_SERVER['REQUEST_METHOD']) . ':' . $paths[0]) {
-    case 'get:user' :
+    case 'get:hostname' :
 
         //***
         //*** + select only one hostname if id is specified, like http://<servername>/hostname/1
@@ -46,30 +50,30 @@ switch (strtolower($_SERVER['REQUEST_METHOD']) . ':' . $paths[0]) {
         //***
         if(!empty($paths[1])){
             echo "select by resource id";
-            $sql_text = "SELECT * FROM PLAYLIST WHERE userid = " . $id;
+            $sql_text = "SELECT * FROM " . $table_name . " WHERE hostname = " . $id;
             }
         else if(array_key_exists("key", $db_info) && array_key_exists("value", $db_info)){
             echo "select by key / value";
-            $sql_text = "SELECT * FROM PLAYLIST WHERE " . $db_info["key"] . " = " . $db_info["value"];
+            $sql_text = "SELECT * FROM " . $table_name . " WHERE " . $db_info["key"] . " = " . $db_info["value"];
             }
         else{
             echo "select all";
-            $sql_text = "SELECT * FROM PLAYLIST";
+            $sql_text = "SELECT * FROM " . $table_name;
             }
         break;
 
-    case 'post:user':
+    case 'post:hostname':
         $sql_text = "INSERT ....... ";
         break;
 
-    case 'delete:user':
+    case 'delete:hostname':
         if(!empty($paths[1])){
             echo "deleted by resource id";
-            $sql_text = "DELETE FROM PLAYLIST WHERE userid = " . $id;
+            $sql_text = "DELETE FROM " . $table_name . " WHERE hostname = " . $id;
             }
         else if(array_key_exists("key", $db_info) && array_key_exists("value", $db_info)){
             echo "deleted by key / value";
-            $sql_text = "DELETE FROM PLAYLIST WHERE " . $db_info["key"] . " = " . $db_info["value"];
+            $sql_text = "DELETE FROM " . $table_name . " WHERE " . $db_info["key"] . " = " . $db_info["value"];
             }
         else{
             echo "You need to specify resource id or key / value";
@@ -87,9 +91,9 @@ switch (strtolower($_SERVER['REQUEST_METHOD']) . ':' . $paths[0]) {
 //*** execute sql
 //***
 $sql = new database();
-$sql->exec_sql("localhost",
+$sql->exec_sql($db_hostname,
                $db_info["username"],
                $db_info["password"],
-               "seal",
+               $database_name,
                $sql_text);
 ?>
