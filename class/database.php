@@ -9,10 +9,10 @@ class database{
                              $target_db,
                              $sql_text){
 
-        $link = mysql_connect($target_host, $user, $password); ### ‚±‚±•Ï‚¦‚é
+        $link = mysql_connect($target_host, $user, $password);
         if (!$link) die('Failed to connect target database : '.mysql_error());
 
-        $db_selected = mysql_select_db('seal', $link);          ### ‚±‚±•Ï‚¦‚é
+        $db_selected = mysql_select_db($target_db, $link);
         if (!$db_selected) die('unable to find selected database : '.mysql_error());
 
         $result = mysql_query($sql_text);
@@ -23,13 +23,13 @@ class database{
         if(preg_match('/SELECT/i',$sql_text)){
             while ($row = mysql_fetch_assoc($result)) {
                 $data[] = array(
-                            'userid'      => $row["USERID"],      ### ‚±‚±•Ï‚¦‚é
-                            'datapath'    => $row["DATAPATH"],    ### ‚±‚±•Ï‚¦‚é
-                            'title'       => $row["TITLE"],       ### ‚±‚±•Ï‚¦‚é
-                            'comment'     => $row["COMMENT"],     ### ‚±‚±•Ï‚¦‚é
-                            'create_date' => $row["CREATE_DATE"], ### ‚±‚±•Ï‚¦‚é
-                            'playcount'   => $row["PLAYCOUNT"],   ### ‚±‚±•Ï‚¦‚é
-                            'successcount'=> $row["SUCCESSCOUNT"] ### ‚±‚±•Ï‚¦‚é
+                            'userid'      => $row["USERID"],      ### ã“ã“å¤‰ãˆã‚‹
+                            'datapath'    => $row["DATAPATH"],    ### ã“ã“å¤‰ãˆã‚‹
+                            'title'       => $row["TITLE"],       ### ã“ã“å¤‰ãˆã‚‹
+                            'comment'     => $row["COMMENT"],     ### ã“ã“å¤‰ãˆã‚‹
+                            'create_date' => $row["CREATE_DATE"], ### ã“ã“å¤‰ãˆã‚‹
+                            'playcount'   => $row["PLAYCOUNT"],   ### ã“ã“å¤‰ãˆã‚‹
+                            'successcount'=> $row["SUCCESSCOUNT"] ### ã“ã“å¤‰ãˆã‚‹
                             );
                 }
             }
