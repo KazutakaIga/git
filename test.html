@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<title>test</title>
+
+<script src="./jquery-2.1.4.min.js"></script>
+</head>
+<body id="list" onload="getList()">
+<script>
+function getList(){
+    $.ajax({
+        type    : "POST",
+        cache   : false,
+        url     : "./test.php",
+        success : function(data)
+            {
+            console.log(JSON.stringify(data));
+            data = JSON.parse(data);
+
+            var table_element = $("<table id='main_table'>");
+            $("#list").append(table_element);
+
+            for(var i = 0; i < data.length; i++){
+
+                var tr_element = $("<tr id='row" + i + "'>");
+                $("#main_table").append(tr_element);
+
+                for(key in data[i]){
+                    var td_element = $("<td>");
+                    td_element.text(data[i][key]);
+                    $("#row" + i).append(td_element);
+                    }
+                }
+            },
+        error: function(XMLHttpRequest, textStatus, errorThrown)
+            {
+            alert('Error : ' + errorThrown);
+            }
+        });
+    };
+</script>

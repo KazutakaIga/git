@@ -1,0 +1,97 @@
+###
+###
+###
++ allow POST, GET, DELETE method, UPDATE is not allowed
++ require database username and password in http response body
++ contorl curl return value
+  - success or expected case -> 0
+  - failed or unexpected case -> some number except 0
+
++ target resource
+  - hostname
+     base url : http://<servername>/hostname
+       POST   : INSERT new hostname
+       GET    : SELECT all hostname as JSON
+                [{"hostname":"tkigaapd1"},
+                 {"hostname":"tkigaapd2"},
+                 {"hostname":"tkigaapd3"},
+                 {"hostname":"tkigadbd1"},
+                 {"hostname":"tkigadbd2"}]
+       PUT    : Not Allowed
+       DELETE : Not Allowed
+
+     child url: http://<servername>/hostname/<id>
+       POST   : Not Allowed
+       GET    : SELECT target hostname as JSON, like "{hostname : tkigaapd1}"
+       PUT    : Not Allowed
+       DELETE : DELETE target hostname, this method is used in case of failed
+
+
+###
+### setting up
+###
+
+# under httpd document root
+mkdir api
+chmod 755 api
+
+# create .htaccess under (document root)/api
+[(document root)/api/.htaccess]
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ api.php [QSA,L]
+
+# modify apache configuration
+[/etc/httpd/conf/httpd.conf]
+<Directory "(document root)/api">
+     AllowOverride all
+</Directory>
+
+# restart apatche
+systemctl restart httpd
+
+# test with curl
+curl -X POST http://<servername>/api/hostname -d '{"username" : "<username>", "password" : "<password>"}'
+curl -X GET http://<servername>/api/hostname -d '{"username" : "<username>", "password" : "<password>"}'
+curl -X GET http://<servername>/api/hostname/1 -d '{"username" : "<username>", "password" : "<password>"}'
+curl -X GET http://<servername>/api/hostname -d '{"username" : "<username>", "password" : "<password>", "key" : "<where keyname>", "value" : "<value>"}'
+curl -X PUT http://<servername>/api/hostname -d '{"username" : "<username>", "password" : "<password>"}'
+curl -X DELETE http://<servername>/api/hostname -d '{"username" : "<username>", "password" : "<password>"}'
+curl -X DELETE http://<servername>/api/hostname -d '{"username" : "<username>", "password" : "<password>", "key" : "<where keyname>", "value" : "<value>"}'
+
+#
+# test result
+#
+œPOST ³íŒn
+curl -X POST http://localhost/api/user -d '{"username" : "root", "password" : "dile6245"}'
+-> ‚Ü‚¾
+
+œGET ³íŒn
+curl -X GET http://localhost/api/user -d '{"username" : "root", "password" : "dile6245"}'
+-> OK
+curl -X GET http://localhost/api/user/2 -d '{"username" : "root", "password" : "dile6245"}'
+-> OK
+curl -X GET http://localhost/api/user -d '{"username" : "root", "password" : "dile6245", "key" : "userid", "value" : "2"}'
+-> OK
+
+œGET ˆÙíŒn
+curl -X GET http://localhost/api/user/2 -d '{"username" : "root", "password" : "dile6245", "key" : "userid", "value" : "1"}'
+-> OK
+
+œPUTˆÙíŒn
+curl -X PUT http://localhost/api/user -d '{"username" : "root", "password" : "dile6245"}'
+-> OK
+
+œDELETE ³íŒn
+curl -X DELETE http://localhost/api/user/ -d '{"username" : "root", "password" : "dile6245", "key" : "userid", "value" : "1"}'
+-> OK
+curl -X DELETE http://localhost/api/user/5 -d '{"username" : "root", "password" : "dile6245"}'
+-> OK
+
+œDELETEˆÙíŒn
+curl -X DELETE http://localhost/api/user/2 -d '{"username" : "root", "password" : "dile6245", "key" : "userid", "value" : "1"
+}'
+-> OK
+curl -X DELETE http://localhost/api/user/2 -d '{"username" : "root", "password" : "dile6245"}'
+-> OK
