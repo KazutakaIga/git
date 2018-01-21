@@ -39,11 +39,4 @@ class database{
         }
     }
 
-#$sql = new database();
-#$sql_text = "SELECT * FROM PLAYLIST";
-#$sql->exec_sql("localhost",
-#               "root",
-#               "dile6245",
-#               "seal",
-#               $sql_text);
 ?>
