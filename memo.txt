@@ -1,8 +1,9 @@
 ###
+### design outline
 ###
-###
-+ allow POST, GET, DELETE method, UPDATE is not allowed
++ allow POST(INSERT), GET(SELECT), DELETE(DELETE) method, PUT(UPDATE) is not allowed
 + require database username and password in http response body
++ require 
 + contorl curl return value
   - success or expected case -> 0
   - failed or unexpected case -> some number except 0
@@ -32,15 +33,13 @@
 ###
 
 # under httpd document root
+cd <document root>
 mkdir api
 chmod 755 api
-
-# create .htaccess under (document root)/api
-[(document root)/api/.htaccess]
-RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ api.php [QSA,L]
+cd api
+git init
+git remote add origin git@github.com:KazutakaIga/git.git
+git pull origin master
 
 # modify apache configuration
 [/etc/httpd/conf/httpd.conf]
@@ -60,14 +59,18 @@ curl -X PUT http://<servername>/api/hostname -d '{"username" : "<username>", "pa
 curl -X DELETE http://<servername>/api/hostname -d '{"username" : "<username>", "password" : "<password>"}'
 curl -X DELETE http://<servername>/api/hostname -d '{"username" : "<username>", "password" : "<password>", "key" : "<where keyname>", "value" : "<value>"}'
 
+###
+### test result
+###
 #
-# test result
+# POST nominal scenarios
 #
-œPOST ³íŒn
 curl -X POST http://localhost/api/user -d '{"username" : "root", "password" : "dile6245"}'
--> ‚Ü‚¾
+-> not yet
 
-œGET ³íŒn
+#
+# GET nominal scenarios
+#
 curl -X GET http://localhost/api/user -d '{"username" : "root", "password" : "dile6245"}'
 -> OK
 curl -X GET http://localhost/api/user/2 -d '{"username" : "root", "password" : "dile6245"}'
@@ -75,23 +78,36 @@ curl -X GET http://localhost/api/user/2 -d '{"username" : "root", "password" : "
 curl -X GET http://localhost/api/user -d '{"username" : "root", "password" : "dile6245", "key" : "userid", "value" : "2"}'
 -> OK
 
-œGET ˆÙíŒn
+#
+# GET exceptional scenarios
+#
 curl -X GET http://localhost/api/user/2 -d '{"username" : "root", "password" : "dile6245", "key" : "userid", "value" : "1"}'
 -> OK
 
-œPUTˆÙíŒn
+#
+# PUT exceptional scenarios
+#
 curl -X PUT http://localhost/api/user -d '{"username" : "root", "password" : "dile6245"}'
 -> OK
 
-œDELETE ³íŒn
+#
+# DELETE nominal scenarios
+#
 curl -X DELETE http://localhost/api/user/ -d '{"username" : "root", "password" : "dile6245", "key" : "userid", "value" : "1"}'
 -> OK
 curl -X DELETE http://localhost/api/user/5 -d '{"username" : "root", "password" : "dile6245"}'
 -> OK
 
-œDELETEˆÙíŒn
+#
+# DELETE exceptional scenarios
+#
 curl -X DELETE http://localhost/api/user/2 -d '{"username" : "root", "password" : "dile6245", "key" : "userid", "value" : "1"
 }'
 -> OK
-curl -X DELETE http://localhost/api/user/2 -d '{"username" : "root", "password" : "dile6245"}'
+curl -X DELETE http://localhost/api/user/ -d '{"username" : "root", "password" : "dile6245"}'
 -> OK
+
+###
+### to do
+###
++ 
