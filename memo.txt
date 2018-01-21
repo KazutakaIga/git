@@ -3,7 +3,6 @@
 ###
 + allow POST(INSERT), GET(SELECT), DELETE(DELETE) method, PUT(UPDATE) is not allowed
 + require database username and password in http response body
-+ require 
 + contorl curl return value
   - success or expected case -> 0
   - failed or unexpected case -> some number except 0
@@ -107,7 +106,3 @@ curl -X DELETE http://localhost/api/user/2 -d '{"username" : "root", "password" 
 curl -X DELETE http://localhost/api/user/ -d '{"username" : "root", "password" : "dile6245"}'
 -> OK
 
-###
-### to do
-###
-+ 
